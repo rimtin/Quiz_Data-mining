@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>OOP & DW Quick Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <div class="header-top">
+        <div>
+          <h1>OOP & DW Quick Test</h1>
+          <p class="subtitle">MCQs & 10-mark theory practice</p>
+        </div>
+        <button id="theme-toggle" class="icon-btn" title="Toggle dark mode">
+          🌙
+        </button>
+      </div>
+    </header>
+
+    <!-- Mode Switch -->
+    <nav class="mode-switch">
+      <button id="btn-mcq" class="active">MCQ Mode</button>
+      <button id="btn-long">10 Marks Mode</button>
+    </nav>
+
+    <!-- Chapter + Quick Test Row -->
+    <div class="top-row">
+      <div class="chapter-select">
+        <label for="chapter-select">Chapter:</label>
+        <select id="chapter-select">
+          <option value="all">All Chapters</option>
+          <!-- JS will add more options -->
+        </select>
+      </div>
+
+      <button id="btn-quick-test" class="ghost-btn">
+        🧪 Test Yourself
+      </button>
+    </div>
+
+    <!-- MCQ Section -->
+    <section id="mcq-section" class="card">
+      <div class="meta-row">
+        <span id="mcq-unit" class="tag"></span>
+        <span id="mcq-counter" class="counter"></span>
+      </div>
+
+      <h2 id="mcq-question" class="question-text"></h2>
+
+      <div id="mcq-options" class="options-list">
+        <!-- Options added by JS -->
+      </div>
+
+      <div class="btn-row">
+        <button id="btn-check-mcq">Check Answer</button>
+        <button id="btn-next-mcq" class="secondary">Next Question</button>
+      </div>
+
+      <p id="mcq-result" class="result-text"></p>
+
+      <div class="score-row">
+        <span>Score: <strong id="mcq-score">0</strong></span>
+        <span>Attempted: <strong id="mcq-attempts">0</strong></span>
+      </div>
+    </section>
+
+    <!-- Long Answer Section -->
+    <section id="long-section" class="card hidden">
+      <div class="meta-row">
+        <span id="long-unit" class="tag"></span>
+        <span id="long-counter" class="counter"></span>
+      </div>
+
+      <h2 id="long-question" class="question-text"></h2>
+
+      <textarea id="long-answer" rows="7"
+        placeholder="Write your 10-marks answer here..."></textarea>
+
+      <div class="btn-row">
+        <button id="btn-show-model">Show Key Points</button>
+        <button id="btn-next-long" class="secondary">Next Question</button>
+      </div>
+
+      <div id="model-box" class="model-box hidden">
+        <h3>Key Points / Model Answer</h3>
+        <p id="model-answer"></p>
+      </div>
+    </section>
+
+    <footer>
+      <p>Tip: Open this page on your phone like an app 📱</p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
