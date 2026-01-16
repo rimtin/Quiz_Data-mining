@@ -1,319 +1,403 @@
-/* ---------- THEME VARIABLES ---------- */
-:root {
-  --bg: #f3f4f6;
-  --card-bg: #ffffff;
-  --text: #111827;
-  --muted: #6b7280;
-  --border: #e5e7eb;
-  --primary: #2563eb;
-  --primary-soft: #eff6ff;
-  --success: #16a34a;
-  --danger: #b91c1c;
-  --shadow-soft: 0 8px 20px rgba(15, 23, 42, 0.08);
+// ======================================================
+//  BUILD MASTER QUESTION ARRAYS FROM UNIT FILES
+// ======================================================
+
+const mcqQuestions = [
+  ...(window.unit1_mcq || []),
+  ...(window.unit2_mcq || [])
+  // later: ...(window.unit3_mcq || []), ...
+];
+
+const longQuestions = [
+  ...(window.unit1_long || []),
+  ...(window.unit2_long || [])
+  // later: ...(window.unit3_long || []), ...
+];
+
+// ======================================================
+//  STATE
+// ======================================================
+
+let currentMcqIndex = 0;
+let currentLongIndex = 0;
+let mcqScore = 0;
+let mcqAttempts = 0;
+
+let currentChapter = "all";
+let filteredMcqIndices = [];
+let filteredLongIndices = [];
+
+// Quick Test mode
+let isQuickTest = false;
+let quickOrder = [];
+let quickTotal = 0;
+let quickPosition = 0;
+const QUICK_TEST_LENGTH = 10;
+
+// per-question answered flag (fix double attempts)
+let mcqAnswered = false;
+
+// ======================================================
+//  ELEMENT REFERENCES
+// ======================================================
+
+const btnMcqMode = document.getElementById("btn-mcq");
+const btnLongMode = document.getElementById("btn-long");
+
+const mcqSection = document.getElementById("mcq-section");
+const longSection = document.getElementById("long-section");
+
+const mcqUnitEl = document.getElementById("mcq-unit");
+const mcqCounterEl = document.getElementById("mcq-counter");
+const mcqQuestionEl = document.getElementById("mcq-question");
+const mcqOptionsEl = document.getElementById("mcq-options");
+const mcqResultEl = document.getElementById("mcq-result");
+const mcqScoreEl = document.getElementById("mcq-score");
+const mcqAttemptsEl = document.getElementById("mcq-attempts");
+
+const btnNextMcq = document.getElementById("btn-next-mcq");
+
+const longUnitEl = document.getElementById("long-unit");
+const longCounterEl = document.getElementById("long-counter");
+const longQuestionEl = document.getElementById("long-question");
+const longAnswerEl = document.getElementById("long-answer");
+const btnShowModel = document.getElementById("btn-show-model");
+const btnNextLong = document.getElementById("btn-next-long");
+const modelBoxEl = document.getElementById("model-box");
+const modelAnswerEl = document.getElementById("model-answer");
+
+const chapterSelect = document.getElementById("chapter-select");
+const btnQuickTest = document.getElementById("btn-quick-test");
+
+const themeToggleBtn = document.getElementById("theme-toggle");
+
+// ======================================================
+//  THEME (LIGHT / DARK)
+// ======================================================
+
+function applyTheme(theme) {
+  const body = document.body;
+  if (theme === "dark") {
+    body.classList.add("dark");
+    themeToggleBtn.textContent = "☀️";
+  } else {
+    body.classList.remove("dark");
+    themeToggleBtn.textContent = "🌙";
+  }
+  localStorage.setItem("quiz-theme", theme);
 }
 
-/* Dark theme overrides */
-body.dark {
-  --bg: #020617;
-  --card-bg: #020617;
-  --text: #e5e7eb;
-  --muted: #9ca3af;
-  --border: #1f2937;
-  --primary: #60a5fa;
-  --primary-soft: #0b1120;
-  --success: #22c55e;
-  --danger: #f97373;
-  --shadow-soft: 0 12px 25px rgba(0, 0, 0, 0.7);
+const savedTheme = localStorage.getItem("quiz-theme") || "light";
+applyTheme(savedTheme);
+
+themeToggleBtn.addEventListener("click", () => {
+  const newTheme = document.body.classList.contains("dark") ? "light" : "dark";
+  applyTheme(newTheme);
+});
+
+// ======================================================
+//  MODE SWITCH (MCQ / LONG)
+// ======================================================
+
+btnMcqMode.addEventListener("click", () => {
+  btnMcqMode.classList.add("active");
+  btnLongMode.classList.remove("active");
+  mcqSection.classList.remove("hidden");
+  longSection.classList.add("hidden");
+});
+
+btnLongMode.addEventListener("click", () => {
+  btnLongMode.classList.add("active");
+  btnMcqMode.classList.remove("active");
+  longSection.classList.remove("hidden");
+  mcqSection.classList.add("hidden");
+});
+
+// ======================================================
+//  CHAPTER HANDLING
+// ======================================================
+
+function getAllChapters() {
+  const set = new Set();
+  mcqQuestions.forEach((q) => set.add(q.unit));
+  longQuestions.forEach((q) => set.add(q.unit));
+  return Array.from(set);
 }
 
-/* ---------- GLOBAL ---------- */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+function populateChapterSelect() {
+  const chapters = getAllChapters().sort();
+  chapters.forEach((ch) => {
+    const opt = document.createElement("option");
+    opt.value = ch;
+    opt.textContent = ch;
+    chapterSelect.appendChild(opt);
+  });
 }
 
-body {
-  background: var(--bg);
-  color: var(--text);
+function exitQuickTest() {
+  isQuickTest = false;
+  btnQuickTest.classList.remove("active-test");
 }
 
-.app-container {
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 1rem;
-}
+chapterSelect.addEventListener("change", () => {
+  currentChapter = chapterSelect.value;
 
-/* ---------- HEADER ---------- */
-header {
-  margin-bottom: 1rem;
-}
+  // if user changes chapter, turn OFF quick test
+  exitQuickTest();
 
-.header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+  updateFilteredIndices();
+  resetScore();
+  loadMcqQuestionFromFilter();
+  if (longQuestions.length > 0) {
+    loadLongQuestionFromFilter();
+  }
+});
 
-header h1 {
-  font-size: 1.6rem;
-  font-weight: 700;
-}
+function updateFilteredIndices() {
+  if (currentChapter === "all") {
+    filteredMcqIndices = mcqQuestions.map((_, i) => i);
+    filteredLongIndices = longQuestions.map((_, i) => i);
+  } else {
+    filteredMcqIndices = mcqQuestions
+      .map((q, i) => (q.unit === currentChapter ? i : -1))
+      .filter((i) => i !== -1);
 
-.subtitle {
-  font-size: 0.9rem;
-  color: var(--muted);
-  margin-top: 0.2rem;
-}
-
-.icon-btn {
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  padding: 0.4rem 0.6rem;
-  background: var(--card-bg);
-  cursor: pointer;
-  font-size: 1.1rem;
-}
-
-/* ---------- MODE SWITCH ---------- */
-.mode-switch {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 0.7rem;
-}
-
-.mode-switch button {
-  flex: 1;
-  padding: 0.6rem;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: #e5e7eb;
-  font-weight: 600;
-  cursor: pointer;
-  color: #111827;
-}
-
-body.dark .mode-switch button {
-  background: #111827;
-  color: #e5e7eb;
-}
-
-.mode-switch button.active {
-  background: var(--primary);
-  color: #ffffff;
-  border-color: var(--primary);
-}
-
-/* ---------- TOP ROW (CHAPTER + QUICK TEST) ---------- */
-.top-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.8rem;
-  flex-wrap: wrap;
-}
-
-.chapter-select {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-}
-
-.chapter-select label {
-  color: var(--muted);
-}
-
-.chapter-select select {
-  padding: 0.35rem 0.6rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border);
-  background: var(--card-bg);
-  color: var(--text);
-  font-size: 0.85rem;
-}
-
-.ghost-btn {
-  border-radius: 999px;
-  border: 1px solid var(--primary);
-  padding: 0.35rem 0.9rem;
-  background: transparent;
-  color: var(--primary);
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* ---------- CARD ---------- */
-.card {
-  background: var(--card-bg);
-  border-radius: 0.75rem;
-  padding: 1rem;
-  box-shadow: var(--shadow-soft);
-  border: 1px solid var(--border);
-  margin-bottom: 1rem;
-}
-
-.hidden {
-  display: none;
-}
-
-/* ---------- META ROW ---------- */
-.meta-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-  font-size: 0.8rem;
-}
-
-.tag {
-  padding: 0.15rem 0.5rem;
-  border-radius: 999px;
-  background: var(--primary-soft);
-  color: var(--primary);
-}
-
-.counter {
-  color: var(--muted);
-}
-
-/* ---------- QUESTION ---------- */
-.question-text {
-  font-size: 1rem;
-  margin-bottom: 0.8rem;
-}
-
-/* ---------- OPTIONS ---------- */
-.options-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  margin-bottom: 0.8rem;
-}
-
-.option {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 0.5rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border);
-  cursor: pointer;
-}
-
-.option input {
-  transform: scale(1.1);
-}
-
-.option span {
-  font-size: 0.95rem;
-}
-
-/* ---------- BUTTONS ---------- */
-.btn-row {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.btn-row button {
-  flex: 1;
-  padding: 0.5rem 0.7rem;
-  border-radius: 0.6rem;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-#btn-check-mcq,
-#btn-show-model {
-  background: var(--success);
-  color: white;
-}
-
-.secondary {
-  background: #e5e7eb;
-  color: #111827;
-}
-
-body.dark .secondary {
-  background: #111827;
-  color: #e5e7eb;
-}
-
-/* ---------- RESULT & SCORE ---------- */
-.result-text {
-  min-height: 1.2rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.result-text.correct {
-  color: var(--success);
-}
-
-.result-text.wrong {
-  color: var(--danger);
-}
-
-.score-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.85rem;
-  color: var(--muted);
-  margin-top: 0.4rem;
-}
-
-/* ---------- LONG ANSWER ---------- */
-textarea {
-  width: 100%;
-  resize: vertical;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border);
-  padding: 0.5rem;
-  font-size: 0.95rem;
-  margin-bottom: 0.7rem;
-  background: var(--card-bg);
-  color: var(--text);
-}
-
-/* ---------- MODEL ANSWER ---------- */
-.model-box {
-  margin-top: 0.5rem;
-  border-radius: 0.5rem;
-  background: #fefce8;
-  border: 1px solid #facc15;
-  padding: 0.6rem;
-}
-
-body.dark .model-box {
-  background: #4b5563;
-  border-color: #eab308;
-}
-
-.model-box h3 {
-  font-size: 0.95rem;
-  margin-bottom: 0.3rem;
-}
-
-/* ---------- FOOTER ---------- */
-footer {
-  text-align: center;
-  font-size: 0.8rem;
-  color: var(--muted);
-  margin-top: 0.5rem;
-}
-
-/* ---------- MOBILE ---------- */
-@media (max-width: 480px) {
-  header h1 {
-    font-size: 1.3rem;
+    filteredLongIndices = longQuestions
+      .map((q, i) => (q.unit === currentChapter ? i : -1))
+      .filter((i) => i !== -1);
   }
 
-  .top-row {
-    align-items: flex-start;
+  if (filteredMcqIndices.length === 0) {
+    filteredMcqIndices = mcqQuestions.map((_, i) => i);
+  }
+  if (filteredLongIndices.length === 0) {
+    filteredLongIndices = longQuestions.map((_, i) => i);
   }
 }
+
+// ======================================================
+//  MCQ LOGIC (AUTO-CHECK ON CLICK)
+// ======================================================
+
+function loadMcqQuestion(index) {
+  const q = mcqQuestions[index];
+
+  // label shows mixed only in quick test, otherwise chapter name
+  mcqUnitEl.textContent = isQuickTest ? "Quick Test – Mixed" : q.unit;
+
+  if (isQuickTest) {
+    mcqCounterEl.textContent = `Q ${quickPosition + 1} of ${quickTotal}`;
+  } else {
+    const pos = filteredMcqIndices.indexOf(index) + 1;
+    mcqCounterEl.textContent = `Q ${pos} of ${filteredMcqIndices.length}`;
+  }
+
+  mcqQuestionEl.textContent = q.question;
+
+  // reset UI
+  mcqOptionsEl.innerHTML = "";
+  mcqResultEl.textContent = "";
+  mcqResultEl.className = "result-text";
+  mcqAnswered = false; // new question, no answer yet
+
+  q.options.forEach((opt, i) => {
+    const label = document.createElement("label");
+    label.className = "option";
+
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = "mcqOption";
+    input.value = i;
+
+    const span = document.createElement("span");
+    span.textContent = opt;
+
+    label.appendChild(input);
+    label.appendChild(span);
+    mcqOptionsEl.appendChild(label);
+
+    // auto-check when option clicked
+    label.addEventListener("click", () => handleMcqSelection(i));
+  });
+}
+
+function handleMcqSelection(selectedIndex) {
+  // prevent double counting if event fires twice
+  if (mcqAnswered) return;
+  mcqAnswered = true;
+
+  const q = mcqQuestions[currentMcqIndex];
+  mcqAttempts++;
+
+  const optionLabels = mcqOptionsEl.querySelectorAll(".option");
+
+  // lock and color options
+  optionLabels.forEach((label, i) => {
+    label.style.pointerEvents = "none";
+
+    if (i === q.correctIndex) {
+      label.style.background = "#d1fae5"; // green-ish
+      label.style.borderColor = "#16a34a";
+    } else if (i === selectedIndex) {
+      label.style.background = "#fee2e2"; // red-ish
+      label.style.borderColor = "#b91c1c";
+    }
+  });
+
+  if (selectedIndex === q.correctIndex) {
+    mcqScore++;
+    mcqResultEl.textContent = "Correct ✅  " + q.explanation;
+    mcqResultEl.className = "result-text correct";
+  } else {
+    mcqResultEl.textContent =
+      "Wrong ❌  Correct answer: " +
+      q.options[q.correctIndex] +
+      ". " +
+      q.explanation;
+    mcqResultEl.className = "result-text wrong";
+  }
+
+  mcqScoreEl.textContent = mcqScore;
+  mcqAttemptsEl.textContent = mcqAttempts;
+}
+
+function loadMcqQuestionFromFilter() {
+  if (filteredMcqIndices.length === 0) return;
+  const randomIndex =
+    filteredMcqIndices[Math.floor(Math.random() * filteredMcqIndices.length)];
+  currentMcqIndex = randomIndex;
+  loadMcqQuestion(currentMcqIndex);
+}
+
+btnNextMcq.addEventListener("click", () => {
+  if (isQuickTest) {
+    quickPosition++;
+    if (quickPosition >= quickTotal) {
+      mcqResultEl.textContent =
+        "🎉 Quick Test finished! You scored " +
+        mcqScore +
+        " out of " +
+        quickTotal +
+        ".";
+      mcqResultEl.className = "result-text correct";
+      // turn test-yourself OFF after completion
+      exitQuickTest();
+      return;
+    }
+    currentMcqIndex = quickOrder[quickPosition];
+    loadMcqQuestion(currentMcqIndex);
+  } else {
+    // normal learning mode = chapter-wise random
+    loadMcqQuestionFromFilter();
+  }
+});
+
+// ======================================================
+//  QUICK TEST (RANDOM FROM ALL MCQs)
+// ======================================================
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+btnQuickTest.addEventListener("click", () => {
+  if (mcqQuestions.length === 0) return;
+
+  // toggle behaviour:
+  if (isQuickTest) {
+    // if already ON, turn it OFF and go back to chapter-wise
+    exitQuickTest();
+    mcqResultEl.textContent = "";
+    loadMcqQuestionFromFilter();
+    return;
+  }
+
+  // start Quick Test mode (mixed all units)
+  isQuickTest = true;
+  btnQuickTest.classList.add("active-test");
+  resetScore();
+
+  quickOrder = shuffleArray(mcqQuestions.map((_, i) => i));
+  quickTotal = Math.min(QUICK_TEST_LENGTH, quickOrder.length);
+  quickPosition = 0;
+
+  currentMcqIndex = quickOrder[0];
+  loadMcqQuestion(currentMcqIndex);
+
+  mcqResultEl.textContent =
+    "Quick Test started! Answer each question and then tap Next Question.";
+  mcqResultEl.className = "result-text";
+});
+
+// ======================================================
+//  LONG ANSWER LOGIC
+// ======================================================
+
+function loadLongQuestion(index) {
+  const q = longQuestions[index];
+  longUnitEl.textContent = q.unit;
+
+  const pos = filteredLongIndices.indexOf(index) + 1;
+  longCounterEl.textContent = `Q ${pos} of ${filteredLongIndices.length}`;
+
+  longQuestionEl.textContent = q.question;
+  longAnswerEl.value = "";
+  modelBoxEl.classList.add("hidden");
+  modelAnswerEl.textContent = "";
+}
+
+function loadLongQuestionFromFilter() {
+  if (filteredLongIndices.length === 0) return;
+  const randomIndex =
+    filteredLongIndices[Math.floor(Math.random() * filteredLongIndices.length)];
+  currentLongIndex = randomIndex;
+  loadLongQuestion(currentLongIndex);
+}
+
+btnShowModel.addEventListener("click", () => {
+  const q = longQuestions[currentLongIndex];
+  modelBoxEl.classList.remove("hidden");
+  modelAnswerEl.textContent = q.keyPoints;
+});
+
+btnNextLong.addEventListener("click", () => {
+  loadLongQuestionFromFilter();
+});
+
+// ======================================================
+//  HELPERS & INIT
+// ======================================================
+
+function resetScore() {
+  mcqScore = 0;
+  mcqAttempts = 0;
+  mcqScoreEl.textContent = mcqScore;
+  mcqAttemptsEl.textContent = mcqAttempts;
+  mcqResultEl.textContent = "";
+  mcqResultEl.className = "result-text";
+}
+
+function init() {
+  if (mcqQuestions.length === 0) {
+    console.warn("No MCQ questions loaded – check unit JS includes.");
+  }
+
+  populateChapterSelect();
+  currentChapter = "all";
+  updateFilteredIndices();
+  resetScore();
+
+  if (mcqQuestions.length > 0) {
+    loadMcqQuestionFromFilter();
+  }
+  if (longQuestions.length > 0) {
+    loadLongQuestionFromFilter();
+  }
+}
+
+init();
