@@ -330,3 +330,17 @@ body.dark .option.incorrect {
   border-color: #f97373 !important;
   color: #f9fafb !important;
 }
+/* ----- Dark mode: make correct / wrong text BLACK ----- */
+body.dark .option.correct,
+body.dark .option.correct span {
+  background-color: #bbf7d0;   /* pastel green */
+  border-color: #22c55e;
+  color: #000000 !important;   /* black text */
+}
+
+body.dark .option.incorrect,
+body.dark .option.incorrect span {
+  background-color: #fecaca;   /* pastel red */
+  border-color: #f97373;
+  color: #000000 !important;   /* black text */
+}
