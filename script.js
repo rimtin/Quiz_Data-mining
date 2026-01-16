@@ -1,198 +1,23 @@
-// ===================== QUESTION BANKS =====================
+// ======================================================
+//  BUILD MASTER QUESTION ARRAYS FROM UNIT FILES
+//  (unit files live in /units and attach data to window.*)
+// ======================================================
 
-// MCQs – Unit 1 Data Warehousing (you can keep adding more units)
 const mcqQuestions = [
-  {
-    unit: "Unit 1 – Data Warehousing",
-    question: "OLTP stands for:",
-    options: [
-      "On-Line Transactional Processing",
-      "On Link Transactional Processing",
-      "On-Line Transnational Process",
-      "On-Line Transactional Program"
-    ],
-    correctIndex: 0,
-    explanation:
-      "OLTP stands for On-Line Transactional Processing. It handles day-to-day transaction data."
-  },
-  {
-    unit: "Unit 1 – Data Warehousing",
-    question: "A data warehouse is:",
-    options: [
-      "Discovery phase of KDD",
-      "Selecting right data",
-      "Subject-oriented, integrated, time-variant, non-volatile data",
-      "None of the above"
-    ],
-    correctIndex: 2,
-    explanation:
-      "According to Bill Inmon, a data warehouse is subject-oriented, integrated, time-variant and non-volatile."
-  },
-  {
-    unit: "Unit 1 – Data Warehousing",
-    question: "A data warehouse is:",
-    options: [
-      "Updated by end-users",
-      "Contains numerous naming conventions",
-      "Organized around subject areas",
-      "Contains only current data"
-    ],
-    correctIndex: 2,
-    explanation:
-      "A data warehouse is organized around major subject areas like sales, customers, inventory, etc."
-  },
-  {
-    unit: "Unit 1 – Data Warehousing",
-    question: "The data warehouse is normally:",
-    options: [
-      "The same as the operational database",
-      "A backup of the OLTP system",
-      "A separate, read-only, fact-based database",
-      "A temporary staging area"
-    ],
-    correctIndex: 2,
-    explanation:
-      "Data warehouse is usually a separate, read-only database designed for analysis and decision support."
-  },
-  {
-    unit: "Unit 1 – Data Warehousing",
-    question:
-      "A ________ is a physical database that receives all its information from the data warehouse.",
-    options: ["Data Mart", "OLTP System", "Operational Data Store", "Metadata Repository"],
-    correctIndex: 0,
-    explanation:
-      "A data mart is a subset of the data warehouse, focused on a specific business area."
-  },
-  {
-    unit: "Unit 1 – Data Warehousing",
-    question:
-      "Data warehouse contains ______ data seldom found in operational systems.",
-    options: ["Informational", "Normalized", "Denormalized", "Summary only"],
-    correctIndex: 2,
-    explanation:
-      "Data warehouses commonly store denormalized data to speed up analytical queries."
-  },
-  {
-    unit: "Unit 1 – Data Warehousing",
-    question:
-      "_______ are numeric measurements that represent business activities.",
-    options: ["Dimensions", "Schemas", "Facts", "Tables"],
-    correctIndex: 2,
-    explanation:
-      "Facts are numeric measures such as sales amount, quantity sold, profit, etc."
-  },
-  {
-    unit: "Unit 1 – Data Warehousing",
-    question: "_______ describes the data in the warehouse.",
-    options: ["Relational Data", "Operational Data", "Informational Data", "Metadata"],
-    correctIndex: 3,
-    explanation:
-      "Metadata is 'data about data' and describes structure, meaning, and usage of data in the warehouse."
-  },
-  {
-    unit: "Unit 1 – Data Warehousing",
-    question: "Dimensionality refers to:",
-    options: [
-      "Cardinality of keys",
-      "Data describing transactions",
-      "Detail of the fact table",
-      "Detail of the dimension table"
-    ],
-    correctIndex: 3,
-    explanation:
-      "Dimensionality refers to how detailed the dimension tables are (levels such as year, month, day, etc.)."
-  },
-  {
-    unit: "Unit 1 – Data Warehousing",
-    question: "BI & Data Warehousing is used for:",
-    options: ["Forecasting", "Data Mining", "Sales Analysis", "All of the above"],
-    correctIndex: 3,
-    explanation:
-      "Business Intelligence and Data Warehousing support forecasting, data mining, sales analysis and many other analytics."
-  },
-  {
-    unit: "Unit 1 – Data Warehousing",
-    question: "Data warehouse is a tool used in ________.",
-    options: [
-      "Online Transaction Processing",
-      "Decision Support Systems",
-      "Real-time control systems",
-      "Backup and recovery"
-    ],
-    correctIndex: 1,
-    explanation:
-      "Data warehouses are a core component of Decision Support Systems (DSS)."
-  },
-  {
-    unit: "Unit 1 – Data Warehousing",
-    question: "An operational system is:",
-    options: [
-      "Used to run business in real time with historical data",
-      "Used to run business in real time with current data",
-      "Used to support decisions with current data",
-      "Used to support decisions with historical data"
-    ],
-    correctIndex: 1,
-    explanation:
-      "Operational (OLTP) systems support day-to-day business operations using current data."
-  },
-  {
-    unit: "Unit 1 – Data Warehousing",
-    question: "Decision Support Systems (DSS) are:",
-    options: [
-      "IBM RDBMS",
-      "Interactive systems for solving unstructured problems",
-      "Node/branch diagrams only",
-      "None of the above"
-    ],
-    correctIndex: 1,
-    explanation:
-      "DSS are interactive computer systems that help users solve semi-structured or unstructured decision problems."
-  },
-  {
-    unit: "Unit 1 – Data Warehousing",
-    question: "Relational DBMS store data based on:",
-    options: [
-      "Dimensional modeling only",
-      "Hierarchical file structures",
-      "Traditional relational (table-based) technology",
-      "Unstructured text documents only"
-    ],
-    correctIndex: 2,
-    explanation:
-      "RDBMS store data in tables (rows and columns) using the relational model."
-  },
-  {
-    unit: "Unit 1 – Data Warehousing",
-    question: "Which applies to data in a data warehouse?",
-    options: [
-      "Data often deleted",
-      "Mostly transactions",
-      "Data rarely deleted",
-      "Very few records processed"
-    ],
-    correctIndex: 2,
-    explanation:
-      "Data in a warehouse is mostly historical and is rarely deleted; it is kept for long-term analysis."
-  }
+  ...(window.unit1_mcq || []),
+  ...(window.unit2_mcq || [])
+  // 👉 later: ...(window.unit3_mcq || []), etc.
 ];
 
-// 10-marks style questions
 const longQuestions = [
-  {
-    unit: "Unit 1 – Data Warehousing",
-    question: "Explain the characteristics of a Data Warehouse.",
-    keyPoints:
-      "• Subject-oriented: Organized around key subjects such as sales, customers, finance, inventory, etc. Helps managers analyze one domain deeply.\n" +
-      "• Integrated: Data collected from multiple sources (ERP, CRM, logs, files) and made consistent. Example: common date format, currency and naming conventions.\n" +
-      "• Time-variant: Stores historical data (months/years). Supports trend analysis such as 5-year sales growth.\n" +
-      "• Non-volatile: Data is mainly read-only; it is not frequently updated or deleted, which supports stable, repeatable queries.\n" +
-      "Conclusion: A data warehouse is a central, historical, integrated and stable repository that supports Business Intelligence and Decision Support Systems."
-  }
-  // 👉 Later you can add more long-answer questions here
+  ...(window.unit1_long || []),
+  ...(window.unit2_long || [])
+  // 👉 later: ...(window.unit3_long || []), etc.
 ];
 
-// ===================== STATE =====================
+// ======================================================
+//  STATE
+// ======================================================
 
 let currentMcqIndex = 0;
 let currentLongIndex = 0;
@@ -210,7 +35,9 @@ let quickTotal = 0;
 let quickPosition = 0;
 const QUICK_TEST_LENGTH = 10;
 
-// ===================== ELEMENTS =====================
+// ======================================================
+//  ELEMENT REFERENCES
+// ======================================================
 
 const btnMcqMode = document.getElementById("btn-mcq");
 const btnLongMode = document.getElementById("btn-long");
@@ -226,7 +53,6 @@ const mcqResultEl = document.getElementById("mcq-result");
 const mcqScoreEl = document.getElementById("mcq-score");
 const mcqAttemptsEl = document.getElementById("mcq-attempts");
 
-const btnCheckMcq = document.getElementById("btn-check-mcq");
 const btnNextMcq = document.getElementById("btn-next-mcq");
 
 const longUnitEl = document.getElementById("long-unit");
@@ -243,7 +69,9 @@ const btnQuickTest = document.getElementById("btn-quick-test");
 
 const themeToggleBtn = document.getElementById("theme-toggle");
 
-// ===================== THEME (LIGHT / DARK) =====================
+// ======================================================
+//  THEME (LIGHT / DARK)
+// ======================================================
 
 function applyTheme(theme) {
   const body = document.body;
@@ -265,7 +93,9 @@ themeToggleBtn.addEventListener("click", () => {
   applyTheme(newTheme);
 });
 
-// ===================== MODE SWITCH (MCQ / LONG) =====================
+// ======================================================
+//  MODE SWITCH (MCQ / LONG)
+// ======================================================
 
 btnMcqMode.addEventListener("click", () => {
   btnMcqMode.classList.add("active");
@@ -281,7 +111,9 @@ btnLongMode.addEventListener("click", () => {
   mcqSection.classList.add("hidden");
 });
 
-// ===================== CHAPTER HANDLING =====================
+// ======================================================
+//  CHAPTER HANDLING
+// ======================================================
 
 function getAllChapters() {
   const set = new Set();
@@ -306,7 +138,9 @@ chapterSelect.addEventListener("change", () => {
   updateFilteredIndices();
   resetScore();
   loadMcqQuestionFromFilter();
-  loadLongQuestionFromFilter();
+  if (longQuestions.length > 0) {
+    loadLongQuestionFromFilter();
+  }
 });
 
 function updateFilteredIndices() {
@@ -331,7 +165,9 @@ function updateFilteredIndices() {
   }
 }
 
-// ===================== MCQ LOGIC =====================
+// ======================================================
+//  MCQ LOGIC (AUTO-CHECK ON CLICK)
+// ======================================================
 
 function loadMcqQuestion(index) {
   const q = mcqQuestions[index];
@@ -346,6 +182,7 @@ function loadMcqQuestion(index) {
 
   mcqQuestionEl.textContent = q.question;
 
+  // reset UI
   mcqOptionsEl.innerHTML = "";
   mcqResultEl.textContent = "";
   mcqResultEl.className = "result-text";
@@ -365,28 +202,30 @@ function loadMcqQuestion(index) {
     label.appendChild(input);
     label.appendChild(span);
     mcqOptionsEl.appendChild(label);
+
+    // auto-check when option clicked
+    label.addEventListener("click", () => handleMcqSelection(i));
   });
 }
 
-function loadMcqQuestionFromFilter() {
-  const randomIndex =
-    filteredMcqIndices[Math.floor(Math.random() * filteredMcqIndices.length)];
-  currentMcqIndex = randomIndex;
-  loadMcqQuestion(currentMcqIndex);
-}
-
-btnCheckMcq.addEventListener("click", () => {
+function handleMcqSelection(selectedIndex) {
   const q = mcqQuestions[currentMcqIndex];
-  const selected = document.querySelector('input[name="mcqOption"]:checked');
-
-  if (!selected) {
-    mcqResultEl.textContent = "Please select an answer.";
-    mcqResultEl.className = "result-text wrong";
-    return;
-  }
-
-  const selectedIndex = parseInt(selected.value, 10);
   mcqAttempts++;
+
+  const optionLabels = mcqOptionsEl.querySelectorAll(".option");
+
+  // lock and color options
+  optionLabels.forEach((label, i) => {
+    label.style.pointerEvents = "none";
+
+    if (i === q.correctIndex) {
+      label.style.background = "#d1fae5"; // green-ish
+      label.style.borderColor = "#16a34a";
+    } else if (i === selectedIndex) {
+      label.style.background = "#fee2e2"; // red-ish
+      label.style.borderColor = "#b91c1c";
+    }
+  });
 
   if (selectedIndex === q.correctIndex) {
     mcqScore++;
@@ -403,7 +242,15 @@ btnCheckMcq.addEventListener("click", () => {
 
   mcqScoreEl.textContent = mcqScore;
   mcqAttemptsEl.textContent = mcqAttempts;
-});
+}
+
+function loadMcqQuestionFromFilter() {
+  if (filteredMcqIndices.length === 0) return;
+  const randomIndex =
+    filteredMcqIndices[Math.floor(Math.random() * filteredMcqIndices.length)];
+  currentMcqIndex = randomIndex;
+  loadMcqQuestion(currentMcqIndex);
+}
 
 btnNextMcq.addEventListener("click", () => {
   if (isQuickTest) {
@@ -426,7 +273,9 @@ btnNextMcq.addEventListener("click", () => {
   }
 });
 
-// ===================== QUICK TEST =====================
+// ======================================================
+//  QUICK TEST (RANDOM FROM ALL MCQs)
+// ======================================================
 
 function shuffleArray(arr) {
   const a = [...arr];
@@ -438,6 +287,8 @@ function shuffleArray(arr) {
 }
 
 btnQuickTest.addEventListener("click", () => {
+  if (mcqQuestions.length === 0) return;
+
   isQuickTest = true;
   resetScore();
 
@@ -449,25 +300,29 @@ btnQuickTest.addEventListener("click", () => {
   loadMcqQuestion(currentMcqIndex);
 
   mcqResultEl.textContent =
-    "Quick Test started! Answer all questions and check your final score.";
+    "Quick Test started! Answer each question and then tap Next Question.";
   mcqResultEl.className = "result-text";
 });
 
-// ===================== LONG ANSWER LOGIC =====================
+// ======================================================
+//  LONG ANSWER LOGIC
+// ======================================================
 
 function loadLongQuestion(index) {
   const q = longQuestions[index];
   longUnitEl.textContent = q.unit;
+
   const pos = filteredLongIndices.indexOf(index) + 1;
   longCounterEl.textContent = `Q ${pos} of ${filteredLongIndices.length}`;
-  longQuestionEl.textContent = q.question;
 
+  longQuestionEl.textContent = q.question;
   longAnswerEl.value = "";
   modelBoxEl.classList.add("hidden");
   modelAnswerEl.textContent = "";
 }
 
 function loadLongQuestionFromFilter() {
+  if (filteredLongIndices.length === 0) return;
   const randomIndex =
     filteredLongIndices[Math.floor(Math.random() * filteredLongIndices.length)];
   currentLongIndex = randomIndex;
@@ -484,7 +339,9 @@ btnNextLong.addEventListener("click", () => {
   loadLongQuestionFromFilter();
 });
 
-// ===================== HELPERS & INIT =====================
+// ======================================================
+//  HELPERS & INIT
+// ======================================================
 
 function resetScore() {
   mcqScore = 0;
@@ -496,12 +353,21 @@ function resetScore() {
 }
 
 function init() {
+  if (mcqQuestions.length === 0) {
+    console.warn("No MCQ questions loaded – check unit JS includes.");
+  }
+
   populateChapterSelect();
   currentChapter = "all";
   updateFilteredIndices();
   resetScore();
-  loadMcqQuestionFromFilter();
-  loadLongQuestionFromFilter();
+
+  if (mcqQuestions.length > 0) {
+    loadMcqQuestionFromFilter();
+  }
+  if (longQuestions.length > 0) {
+    loadLongQuestionFromFilter();
+  }
 }
 
 init();
