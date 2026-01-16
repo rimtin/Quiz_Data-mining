@@ -4,15 +4,38 @@
 
 const mcqQuestions = [
   ...(window.unit1_mcq || []),
-  ...(window.unit2_mcq || [])
-  // later: ...(window.unit3_mcq || []), ...
+  ...(window.unit2_mcq || []),
+  ...(window.unit3_mcq || []),
+  ...(window.unit4_mcq || []),
+  ...(window.unit5_mcq || []),
+  ...(window.unit6_mcq || []),
+  ...(window.unit7_mcq || []),
+  ...(window.unit8_mcq || []),
+  ...(window.unit9_mcq || []),
+  ...(window.unit10_mcq || []),
+  ...(window.unit11_mcq || []),
+  ...(window.unit12_mcq || []),
+  ...(window.unit13_mcq || []),
+  ...(window.unit14_mcq || [])
 ];
 
 const longQuestions = [
   ...(window.unit1_long || []),
-  ...(window.unit2_long || [])
-  // later: ...(window.unit3_long || []), ...
+  ...(window.unit2_long || []),
+  ...(window.unit3_long || []),
+  ...(window.unit4_long || []),
+  ...(window.unit5_long || []),
+  ...(window.unit6_long || []),
+  ...(window.unit7_long || []),
+  ...(window.unit8_long || []),
+  ...(window.unit9_long || []),
+  ...(window.unit10_long || []),
+  ...(window.unit11_long || []),
+  ...(window.unit12_long || []),
+  ...(window.unit13_long || []),
+  ...(window.unit14_long || [])
 ];
+
 
 // ======================================================
 //  STATE
