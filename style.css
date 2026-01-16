@@ -348,3 +348,14 @@ body.dark .option.incorrect span {
   border-color: #f97373 !important;
   color: #000000 !important;             /* BLACK text */
 }
+/* ===== DARK MODE: force black text inside correct / wrong options ===== */
+body.dark .option.correct,
+body.dark .option.correct * {
+  color: #000000 !important;
+}
+
+body.dark .option.incorrect,
+body.dark .option.incorrect * {
+  color: #000000 !important;
+}
+
