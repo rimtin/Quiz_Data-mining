@@ -1,196 +1,427 @@
 /* =========================================================
-   GLOBAL STYLING – Dark Modern UI
+   GLOBAL PAGE STYLING – Dark Mode
    ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: "Inter", sans-serif;
-  background-color: #0f172a;
-  color: #e2e8f0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter",
+    "Segoe UI", sans-serif;
+  background-color: #020617; /* slate-950 */
+  color: #e2e8f0;            /* slate-200 */
 }
 
-/* Container */
-.container {
-  max-width: 850px;
-  margin: auto;
-  padding: 20px;
-}
-
-/* Headers */
-h1, h2, h3 {
-  color: #f1f5f9;
-  margin-bottom: 10px;
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
 }
 
 /* =========================================================
-   MODE TOGGLE BUTTONS
+   HEADER / TITLE
    ========================================================= */
-.mode-toggle {
+
+.app-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #f8fafc; /* slate-50 */
+}
+
+.app-subtitle {
+  font-size: 0.9rem;
+  color: #94a3b8; /* slate-400 */
+  margin-bottom: 18px;
+}
+
+/* =========================================================
+   TOP BAR: MODE TOGGLES + TEST YOURSELF
+   ========================================================= */
+
+.top-row {
   display: flex;
-  width: 100%;
-  margin-bottom: 20px;
-  border-radius: 10px;
-  background: #1e293b;
-  padding: 5px;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* MCQ / 10 Marks toggle group */
+.mode-toggle {
+  display: inline-flex;
+  border-radius: 999px;
+  background: #020617;
+  border: 1px solid #1f2937; /* gray-800 */
+  overflow: hidden;
 }
 
 .mode-btn {
-  flex: 1;
-  padding: 10px;
-  text-align: center;
-  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 0.85rem;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #cbd5f5;
   cursor: pointer;
-  color: #cbd5e1;
-  transition: 0.2s;
   font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.mode-btn + .mode-btn {
+  border-left: 1px solid #1f2937;
 }
 
 .mode-btn.active {
-  background: #3b82f6;
-  color: #fff;
+  background: #3b82f6; /* blue-500 */
+  color: #f9fafb;
 }
 
-/* Test Yourself Button */
+/* Test Yourself pill */
 .test-yourself-btn {
-  background: #1e293b;
-  padding: 7px 15px;
-  border-radius: 20px;
-  font-weight: 600;
-  color: #38bdf8;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
   border: 1px solid #38bdf8;
+  background: #020617;
+  color: #38bdf8;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.2s;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .test-yourself-btn.active {
   background: #38bdf8;
-  color: #0f172a;
+  color: #020617;
 }
 
-/* =========================================================
-   QUESTION CARD
-   ========================================================= */
-.question-card {
-  background: #1e293b;
-  padding: 20px;
-  border-radius: 12px;
-  margin-top: 10px;
-  box-shadow: 0px 0px 12px rgba(0,0,0,0.4);
-}
-
-/* Question Text */
-.question-text {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 15px;
-}
-
-/* =========================================================
-   OPTION BUTTONS
-   ========================================================= */
-.option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px;
-  background: #0f172a;
-  border: 1px solid #334155;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.2s ease;
-  font-size: 0.97rem;
-  color: #e2e8f0;
-}
-
-.option:hover {
-  background: #1e293b;
-}
-
-/* Correct Answer */
-.option.correct {
-  background-color: #16a34a !important;
-  border-color: #22c55e !important;
-  color: #ffffff !important;
-  font-weight: 600;
-}
-
-/* Wrong Answer */
-.option.incorrect {
-  background-color: #b91c1c !important;
-  border-color: #ef4444 !important;
-  color: #ffffff !important;
-  font-weight: 600;
-}
-
-/* Ensure text inside option remains visible */
-.option span,
-.option .option-text {
-  color: inherit !important;
-  font-weight: 600;
-}
-
-/* Fade Non-selected options after answer */
-.option.disabled {
-  opacity: 0.55;
-  pointer-events: none;
-}
-
-/* =========================================================
-   NEXT QUESTION BUTTON
-   ========================================================= */
-.next-btn {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  text-align: center;
-  background: #334155;
-  color: #e2e8f0;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: 0.2s;
-}
-
-.next-btn:hover {
-  background: #475569;
-}
-
-/* =========================================================
-   FOOTER SCORE BAR
-   ========================================================= */
-.footer-bar {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 12px;
+/* Small icon span inside test yourself button (optional) */
+.test-yourself-btn .icon {
   font-size: 0.9rem;
-  color: #94a3b8;
 }
 
 /* =========================================================
-   DROPDOWN (CHAPTER SELECT)
+   CHAPTER SELECT
    ========================================================= */
-select {
-  background: #1e293b;
-  border: 1px solid #334155;
-  padding: 8px 12px;
-  border-radius: 8px;
-  color: #e2e8f0;
-  font-size: 0.95rem;
-  margin-top: 5px;
+
+.chapter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
+.chapter-row label {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+.chapter-select,
+select {
+  background: #020617;
+  border-radius: 8px;
+  border: 1px solid #1f2937;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  color: #e5e7eb;
+}
+
+.chapter-select:focus,
 select:focus {
   outline: none;
   border-color: #3b82f6;
 }
 
 /* =========================================================
-   TIP TEXT
+   QUESTION CARD (MCQ + 10 MARKS)
    ========================================================= */
-.tip {
-  margin-top: 20px;
-  text-align: center;
+
+.card {
+  margin-top: 10px;
+  padding: 16px 16px 14px;
+  border-radius: 12px;
+  background: #020617;
+  border: 1px solid #1f2937;
+  box-shadow: 0 20px 35px rgba(15, 23, 42, 0.7);
+}
+
+/* Unit label + Q number line */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  color: #9ca3af;
+  margin-bottom: 4px;
+}
+
+.card-header strong {
+  color: #cbd5f5;
+}
+
+/* Question text */
+.question-text {
+  margin-top: 4px;
+  margin-bottom: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+/* =========================================================
+   MCQ OPTIONS
+   ========================================================= */
+
+.options-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px;
+}
+
+/* Base option style */
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 11px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  background: #020617;
+  border: 1px solid #1f2937;
+  cursor: pointer;
+  font-size: 0.92rem;
+  color: #e2e8f0 !important;
+  font-weight: 500;
+  transition: background 0.15s ease, border-color 0.15s ease,
+    transform 0.05s ease, box-shadow 0.05s ease, color 0.15s ease;
+}
+
+.option:hover {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+/* Radio inside option */
+.option input[type="radio"] {
+  accent-color: #38bdf8;
+}
+
+/* Text inside option; keep inheriting color */
+.option span,
+.option label,
+.option p {
+  color: inherit !important;
+}
+
+/* ✅ correct selected option */
+.option.correct {
+  background: #16a34a !important;    /* green */
+  border-color: #22c55e !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+/* ❌ wrong selected option */
+.option.incorrect {
+  background: #dc2626 !important;     /* red */
+  border-color: #f97373 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+/* Other options after an answer */
+.option.disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* =========================================================
+   BUTTONS (Next Question, Show Key Points, etc.)
+   ========================================================= */
+
+.btn {
+  display: inline-block;
+  padding: 9px 14px;
+  border-radius: 8px;
+  border: 1px solid #1f2937;
+  background: #111827;
+  color: #e5e7eb;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease,
+    color 0.15s ease, transform 0.05s ease;
+}
+
+.btn:hover {
+  background: #1f2937;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  width: 100%;
+  margin-top: 8px;
+  background: #334155;
+  border-color: #475569;
+}
+
+.btn-primary:hover {
+  background: #475569;
+}
+
+/* Secondary small buttons for 10-mark section */
+.btn-secondary {
+  margin-right: 6px;
+  margin-top: 8px;
+}
+
+/* Disabled state */
+.btn[disabled] {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* =========================================================
+   FOOTER SCORE / ATTEMPT INFO
+   ========================================================= */
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  color: #9ca3af;
+  margin-top: 6px;
+}
+
+/* =========================================================
+   FEEDBACK TEXT (Correct / Wrong)
+   ========================================================= */
+
+.feedback {
+  margin-top: 6px;
   font-size: 0.85rem;
-  color: #94a3b8;
+}
+
+.feedback.correct {
+  color: #4ade80; /* green-400 */
+}
+
+.feedback.wrong {
+  color: #f97373; /* red-400 */
+}
+
+/* =========================================================
+   10-MARKS AREA (TEXTAREA + KEY POINTS)
+   ========================================================= */
+
+.long-card {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #020617;
+  border: 1px solid #1f2937;
+  box-shadow: 0 16px 30px rgba(15, 23, 42, 0.7);
+}
+
+.long-question-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e5e7eb;
+  margin-bottom: 10px;
+}
+
+/* Answer textarea */
+.long-answer-input,
+textarea {
+  width: 100%;
+  min-height: 100px;
+  resize: vertical;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #1f2937;
+  background: #020617;
+  color: #e5e7eb;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.long-answer-input::placeholder,
+textarea::placeholder {
+  color: #6b7280;
+}
+
+.long-answer-input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+/* Key points section */
+.keypoints-title {
+  margin-top: 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #cbd5f5;
+}
+
+.keypoints-box {
+  margin-top: 4px;
+  padding: 10px 11px;
+  border-radius: 8px;
+  border: 1px solid #1f2937;
+  background: #020617;
+  color: #e5e7eb;
+  font-size: 0.88rem;
+  white-space: pre-line;
+}
+
+/* =========================================================
+   TIP / FOOTNOTE
+   ========================================================= */
+
+.tip {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 640px) {
+  main {
+    padding: 16px 10px 32px;
+  }
+
+  .top-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .test-yourself-btn {
+    margin-left: 0;
+    align-self: flex-start;
+  }
+
+  .status-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
 }
