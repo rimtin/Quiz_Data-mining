@@ -130,3 +130,76 @@ body.dark .mode-switch button {
   padding: 0.35rem 0.6rem;
   border-radius: 0.5rem;
   border: 1px solid v
+
+  /* ---------- FIX MCQ OPTION LAYOUT ---------- */
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  border-radius: 0.55rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* Fix radio alignment */
+.option input[type="radio"] {
+  transform: scale(1.15);
+  margin: 0;
+}
+
+/* Make text wrap properly */
+.option span {
+  flex: 1;
+  font-size: 0.95rem;
+  line-height: 1.3rem;
+  color: var(--text);
+}
+
+/* Hover effect */
+.option:hover {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+}
+
+/* Correct Answer Colors */
+.option.correct {
+  background: #bbf7d0;
+  border-color: #16a34a;
+  color: #065f46;
+}
+
+/* Wrong Answer Colors */
+.option.incorrect {
+  background: #fecaca;
+  border-color: #dc2626;
+  color: #7f1d1d;
+}
+
+/* DARK MODE FIXES */
+body.dark .option {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+body.dark .option.correct {
+  background: #065f46 !important;
+  border-color: #059669 !important;
+  color: #ffffff !important;
+}
+
+body.dark .option.incorrect {
+  background: #7f1d1d !important;
+  border-color: #dc2626 !important;
+  color: #ffffff !important;
+}
+
