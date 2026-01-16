@@ -27,15 +27,18 @@ let currentChapter = "all";
 let filteredMcqIndices = [];
 let filteredLongIndices = [];
 
-// Quick Test mode
+// Quick Test (Test Yourself) mode
 let isQuickTest = false;
 let quickOrder = [];
 let quickTotal = 0;
 let quickPosition = 0;
 const QUICK_TEST_LENGTH = 10;
 
-// per-question answered flag (fix double attempts)
+// per-question answered flag (avoid double counting)
 let mcqAnswered = false;
+
+// display counter for chapter-wise learning
+let mcqDisplayNumber = 0;
 
 // ======================================================
 //  ELEMENT REFERENCES
@@ -142,12 +145,13 @@ function exitQuickTest() {
 chapterSelect.addEventListener("change", () => {
   currentChapter = chapterSelect.value;
 
-  // if user changes chapter, turn OFF quick test
+  // When chapter changes, switch back to learning mode
   exitQuickTest();
+  mcqDisplayNumber = 0;
 
   updateFilteredIndices();
   resetScore();
-  loadMcqQuestionFromFilter();
+  loadMcqQuestionFromFilter(true);
   if (longQuestions.length > 0) {
     loadLongQuestionFromFilter();
   }
@@ -182,14 +186,14 @@ function updateFilteredIndices() {
 function loadMcqQuestion(index) {
   const q = mcqQuestions[index];
 
-  // label shows mixed only in quick test, otherwise chapter name
+  // Header label
   mcqUnitEl.textContent = isQuickTest ? "Quick Test – Mixed" : q.unit;
 
+  // Question counter
   if (isQuickTest) {
     mcqCounterEl.textContent = `Q ${quickPosition + 1} of ${quickTotal}`;
   } else {
-    const pos = filteredMcqIndices.indexOf(index) + 1;
-    mcqCounterEl.textContent = `Q ${pos} of ${filteredMcqIndices.length}`;
+    mcqCounterEl.textContent = `Q ${mcqDisplayNumber} of ${filteredMcqIndices.length}`;
   }
 
   mcqQuestionEl.textContent = q.question;
@@ -198,7 +202,7 @@ function loadMcqQuestion(index) {
   mcqOptionsEl.innerHTML = "";
   mcqResultEl.textContent = "";
   mcqResultEl.className = "result-text";
-  mcqAnswered = false; // new question, no answer yet
+  mcqAnswered = false; // new question, not answered yet
 
   q.options.forEach((opt, i) => {
     const label = document.createElement("label");
@@ -222,7 +226,7 @@ function loadMcqQuestion(index) {
 }
 
 function handleMcqSelection(selectedIndex) {
-  // prevent double counting if event fires twice
+  // prevent double counting
   if (mcqAnswered) return;
   mcqAnswered = true;
 
@@ -261,8 +265,16 @@ function handleMcqSelection(selectedIndex) {
   mcqAttemptsEl.textContent = mcqAttempts;
 }
 
-function loadMcqQuestionFromFilter() {
+// reset display counter if needed, and load random question from current chapter
+function loadMcqQuestionFromFilter(resetDisplay = false) {
   if (filteredMcqIndices.length === 0) return;
+
+  if (resetDisplay) {
+    mcqDisplayNumber = 1;
+  } else {
+    mcqDisplayNumber += 1;
+  }
+
   const randomIndex =
     filteredMcqIndices[Math.floor(Math.random() * filteredMcqIndices.length)];
   currentMcqIndex = randomIndex;
@@ -280,20 +292,20 @@ btnNextMcq.addEventListener("click", () => {
         quickTotal +
         ".";
       mcqResultEl.className = "result-text correct";
-      // turn test-yourself OFF after completion
+      // stop quick test, stay on last question + result
       exitQuickTest();
       return;
     }
     currentMcqIndex = quickOrder[quickPosition];
     loadMcqQuestion(currentMcqIndex);
   } else {
-    // normal learning mode = chapter-wise random
-    loadMcqQuestionFromFilter();
+    // normal learning mode
+    loadMcqQuestionFromFilter(false);
   }
 });
 
 // ======================================================
-//  QUICK TEST (RANDOM FROM ALL MCQs)
+//  QUICK TEST (Test Yourself)
 // ======================================================
 
 function shuffleArray(arr) {
@@ -308,16 +320,17 @@ function shuffleArray(arr) {
 btnQuickTest.addEventListener("click", () => {
   if (mcqQuestions.length === 0) return;
 
-  // toggle behaviour:
+  // toggle behaviour
   if (isQuickTest) {
-    // if already ON, turn it OFF and go back to chapter-wise
+    // turn OFF quick test and go back to chapter-wise learning
     exitQuickTest();
     mcqResultEl.textContent = "";
-    loadMcqQuestionFromFilter();
+    mcqDisplayNumber = 0;
+    loadMcqQuestionFromFilter(true);
     return;
   }
 
-  // start Quick Test mode (mixed all units)
+  // start Quick Test mode
   isQuickTest = true;
   btnQuickTest.classList.add("active-test");
   resetScore();
@@ -393,7 +406,7 @@ function init() {
   resetScore();
 
   if (mcqQuestions.length > 0) {
-    loadMcqQuestionFromFilter();
+    loadMcqQuestionFromFilter(true); // start at Q1 of N
   }
   if (longQuestions.length > 0) {
     loadLongQuestionFromFilter();
