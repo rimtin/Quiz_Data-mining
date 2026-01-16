@@ -202,6 +202,8 @@ body.dark .mode-switch button {
   border-radius: 0.5rem;
   border: 1px solid var(--border);
   cursor: pointer;
+  background: var(--card-bg);
+  color: var(--text);
 }
 
 .option input {
@@ -210,6 +212,19 @@ body.dark .mode-switch button {
 
 .option span {
   font-size: 0.95rem;
+}
+
+/* ---------- CORRECT / WRONG (LIGHT MODE) ---------- */
+.option.correct {
+  background-color: #bbf7d0;
+  border-color: #16a34a;
+  color: #111827;
+}
+
+.option.incorrect {
+  background-color: #fecaca;
+  border-color: #dc2626;
+  color: #111827;
 }
 
 /* ---------- BUTTONS ---------- */
@@ -318,29 +333,17 @@ footer {
   }
 }
 
-/* ---------- DARK-MODE FIX FOR CORRECT/WRONG OPTIONS ---------- */
-body.dark .option.correct {
-  background-color: #065f46 !important;
-  border-color: #22c55e !important;
-  color: #f9fafb !important;
-}
-
-body.dark .option.incorrect {
-  background-color: #7f1d1d !important;
-  border-color: #f97373 !important;
-  color: #f9fafb !important;
-}
-/* ----- Dark mode: make correct / wrong text BLACK ----- */
+/* ---------- DARK-MODE: CORRECT / WRONG WITH BLACK TEXT ---------- */
 body.dark .option.correct,
 body.dark .option.correct span {
-  background-color: #bbf7d0;   /* pastel green */
-  border-color: #22c55e;
-  color: #000000 !important;   /* black text */
+  background-color: #bbf7d0 !important;  /* same green as light mode */
+  border-color: #22c55e !important;
+  color: #000000 !important;            /* BLACK text */
 }
 
 body.dark .option.incorrect,
 body.dark .option.incorrect span {
-  background-color: #fecaca;   /* pastel red */
-  border-color: #f97373;
-  color: #000000 !important;   /* black text */
+  background-color: #fecaca !important;  /* same red as light mode */
+  border-color: #f97373 !important;
+  color: #000000 !important;             /* BLACK text */
 }
