@@ -15,14 +15,14 @@
 /* Dark theme overrides */
 body.dark {
   --bg: #020617;
-  --card-bg: #0f172a;
+  --card-bg: #020617;
   --text: #e5e7eb;
   --muted: #9ca3af;
-  --border: #1e293b;
+  --border: #1f2937;
   --primary: #60a5fa;
   --primary-soft: #0b1120;
   --success: #22c55e;
-  --danger: #f87171;
+  --danger: #f97373;
   --shadow-soft: 0 12px 25px rgba(0, 0, 0, 0.7);
 }
 
@@ -95,7 +95,7 @@ header h1 {
 }
 
 body.dark .mode-switch button {
-  background: #1e293b;
+  background: #111827;
   color: #e5e7eb;
 }
 
@@ -129,77 +129,204 @@ body.dark .mode-switch button {
 .chapter-select select {
   padding: 0.35rem 0.6rem;
   border-radius: 0.5rem;
-  border: 1px solid v
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.85rem;
+}
 
-  /* ---------- FIX MCQ OPTION LAYOUT ---------- */
+.ghost-btn {
+  border-radius: 999px;
+  border: 1px solid var(--primary);
+  padding: 0.35rem 0.9rem;
+  background: transparent;
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ---------- CARD ---------- */
+.card {
+  background: var(--card-bg);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+
+.hidden {
+  display: none;
+}
+
+/* ---------- META ROW ---------- */
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.tag {
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.counter {
+  color: var(--muted);
+}
+
+/* ---------- QUESTION ---------- */
+.question-text {
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+/* ---------- OPTIONS ---------- */
 .options-list {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  margin-bottom: 1rem;
+  gap: 0.4rem;
+  margin-bottom: 0.8rem;
 }
 
 .option {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 0.8rem;
+  gap: 0.4rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.5rem;
   border: 1px solid var(--border);
-  background: var(--card-bg);
-  border-radius: 0.55rem;
   cursor: pointer;
-  width: 100%;
 }
 
-/* Fix radio alignment */
-.option input[type="radio"] {
-  transform: scale(1.15);
-  margin: 0;
+.option input {
+  transform: scale(1.1);
 }
 
-/* Make text wrap properly */
 .option span {
-  flex: 1;
   font-size: 0.95rem;
-  line-height: 1.3rem;
+}
+
+/* ---------- BUTTONS ---------- */
+.btn-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.btn-row button {
+  flex: 1;
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.6rem;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#btn-check-mcq,
+#btn-show-model {
+  background: var(--success);
+  color: white;
+}
+
+.secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+body.dark .secondary {
+  background: #111827;
+  color: #e5e7eb;
+}
+
+/* ---------- RESULT & SCORE ---------- */
+.result-text {
+  min-height: 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.result-text.correct {
+  color: var(--success);
+}
+
+.result-text.wrong {
+  color: var(--danger);
+}
+
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* ---------- LONG ANSWER ---------- */
+textarea {
+  width: 100%;
+  resize: vertical;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  padding: 0.5rem;
+  font-size: 0.95rem;
+  margin-bottom: 0.7rem;
+  background: var(--card-bg);
   color: var(--text);
 }
 
-/* Hover effect */
-.option:hover {
-  background: var(--primary-soft);
-  border-color: var(--primary);
+/* ---------- MODEL ANSWER ---------- */
+.model-box {
+  margin-top: 0.5rem;
+  border-radius: 0.5rem;
+  background: #fefce8;
+  border: 1px solid #facc15;
+  padding: 0.6rem;
 }
 
-/* Correct Answer Colors */
-.option.correct {
-  background: #bbf7d0;
-  border-color: #16a34a;
-  color: #065f46;
+body.dark .model-box {
+  background: #4b5563;
+  border-color: #eab308;
 }
 
-/* Wrong Answer Colors */
-.option.incorrect {
-  background: #fecaca;
-  border-color: #dc2626;
-  color: #7f1d1d;
+.model-box h3 {
+  font-size: 0.95rem;
+  margin-bottom: 0.3rem;
 }
 
-/* DARK MODE FIXES */
-body.dark .option {
-  background: #0f172a;
-  border-color: #1e293b;
+/* ---------- FOOTER ---------- */
+footer {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
 }
 
+/* ---------- MOBILE ---------- */
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.3rem;
+  }
+
+  .top-row {
+    align-items: flex-start;
+  }
+}
+
+/* ---------- DARK-MODE FIX FOR CORRECT/WRONG OPTIONS ---------- */
 body.dark .option.correct {
-  background: #065f46 !important;
-  border-color: #059669 !important;
-  color: #ffffff !important;
+  background-color: #065f46 !important;
+  border-color: #22c55e !important;
+  color: #f9fafb !important;
 }
 
 body.dark .option.incorrect {
-  background: #7f1d1d !important;
-  border-color: #dc2626 !important;
-  color: #ffffff !important;
+  background-color: #7f1d1d !important;
+  border-color: #f97373 !important;
+  color: #f9fafb !important;
 }
-
