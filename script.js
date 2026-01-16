@@ -1,18 +1,17 @@
 // ======================================================
 //  BUILD MASTER QUESTION ARRAYS FROM UNIT FILES
-//  (unit files live in /units and attach data to window.*)
 // ======================================================
 
 const mcqQuestions = [
   ...(window.unit1_mcq || []),
   ...(window.unit2_mcq || [])
-  // 👉 later: ...(window.unit3_mcq || []), etc.
+  // later: ...(window.unit3_mcq || []), ...
 ];
 
 const longQuestions = [
   ...(window.unit1_long || []),
   ...(window.unit2_long || [])
-  // 👉 later: ...(window.unit3_long || []), etc.
+  // later: ...(window.unit3_long || []), ...
 ];
 
 // ======================================================
@@ -34,6 +33,9 @@ let quickOrder = [];
 let quickTotal = 0;
 let quickPosition = 0;
 const QUICK_TEST_LENGTH = 10;
+
+// per-question answered flag (fix double attempts)
+let mcqAnswered = false;
 
 // ======================================================
 //  ELEMENT REFERENCES
@@ -132,9 +134,17 @@ function populateChapterSelect() {
   });
 }
 
+function exitQuickTest() {
+  isQuickTest = false;
+  btnQuickTest.classList.remove("active-test");
+}
+
 chapterSelect.addEventListener("change", () => {
   currentChapter = chapterSelect.value;
-  isQuickTest = false;
+
+  // if user changes chapter, turn OFF quick test
+  exitQuickTest();
+
   updateFilteredIndices();
   resetScore();
   loadMcqQuestionFromFilter();
@@ -171,6 +181,8 @@ function updateFilteredIndices() {
 
 function loadMcqQuestion(index) {
   const q = mcqQuestions[index];
+
+  // label shows mixed only in quick test, otherwise chapter name
   mcqUnitEl.textContent = isQuickTest ? "Quick Test – Mixed" : q.unit;
 
   if (isQuickTest) {
@@ -186,6 +198,7 @@ function loadMcqQuestion(index) {
   mcqOptionsEl.innerHTML = "";
   mcqResultEl.textContent = "";
   mcqResultEl.className = "result-text";
+  mcqAnswered = false; // new question, no answer yet
 
   q.options.forEach((opt, i) => {
     const label = document.createElement("label");
@@ -209,6 +222,10 @@ function loadMcqQuestion(index) {
 }
 
 function handleMcqSelection(selectedIndex) {
+  // prevent double counting if event fires twice
+  if (mcqAnswered) return;
+  mcqAnswered = true;
+
   const q = mcqQuestions[currentMcqIndex];
   mcqAttempts++;
 
@@ -263,12 +280,14 @@ btnNextMcq.addEventListener("click", () => {
         quickTotal +
         ".";
       mcqResultEl.className = "result-text correct";
-      isQuickTest = false;
+      // turn test-yourself OFF after completion
+      exitQuickTest();
       return;
     }
     currentMcqIndex = quickOrder[quickPosition];
     loadMcqQuestion(currentMcqIndex);
   } else {
+    // normal learning mode = chapter-wise random
     loadMcqQuestionFromFilter();
   }
 });
@@ -289,7 +308,18 @@ function shuffleArray(arr) {
 btnQuickTest.addEventListener("click", () => {
   if (mcqQuestions.length === 0) return;
 
+  // toggle behaviour:
+  if (isQuickTest) {
+    // if already ON, turn it OFF and go back to chapter-wise
+    exitQuickTest();
+    mcqResultEl.textContent = "";
+    loadMcqQuestionFromFilter();
+    return;
+  }
+
+  // start Quick Test mode (mixed all units)
   isQuickTest = true;
+  btnQuickTest.classList.add("active-test");
   resetScore();
 
   quickOrder = shuffleArray(mcqQuestions.map((_, i) => i));
